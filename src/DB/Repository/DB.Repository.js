@@ -31,7 +31,7 @@ export const findById = (model, id, select = "", options = {}) => {
 };
 
 // create
-export const create = async (model, data, options = {}) => {
+export const create = async (model, data , options = {}) => {
   const [doc] = await model.create([data], options);
   return doc;
 };

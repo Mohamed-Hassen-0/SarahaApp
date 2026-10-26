@@ -2,11 +2,11 @@ import connectDB from "./DB/connection.js";
 import { AuthRouter, MessageRouter, UserRouter } from "./Modules/index.js";
 import { badRequest, globalErrorHandler } from "./Utils/Response/error.response.js";
 import successResponse from "./Utils/Response/success.response.js";
-
+import cors from "cors"
 const bootStrap = async (app, express) => {
 
   
-  app.use(express.json());
+  app.use(express.json(),cors());
   await connectDB();
 
   app.get("/",(req,res)=>{

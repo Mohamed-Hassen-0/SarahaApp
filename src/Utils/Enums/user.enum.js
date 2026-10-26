@@ -7,6 +7,14 @@ export const RoleEnum = {
   USER: "USER",
   ADMIN: "ADMIN",
 };
+export const signtureEnum = {
+  USER: "USER",
+  ADMIN: "ADMIN",
+};
+export const TokenTypeEnum = {
+  ACCESS: "ACCESS",
+  REFRESH: "REFRESH",
+};
 
 export const ProviderEnum = {
   SYSTEM: "SYSTEM",
