@@ -15,8 +15,10 @@ import {
   TokenTypeEnum,
 } from "../Enums/user.enum.js";
 import { badRequest, notFound } from "../Response/error.response.js";
-import { findById } from "../../DB/Repository/DB.Repository.js";
+import { findById, findOne } from "../../DB/Repository/DB.Repository.js";
 import UserModel from "../../DB/models/User.model.js";
+import {v4 as uuid} from "uuid"
+import TokenModel from "../../DB/models/token.model.js";
 
 export const generateToken = async ({ payload, secret, options }) => {
   return jwt.sign(payload, secret, options);
@@ -58,16 +60,16 @@ export const getNewLoginCredentials = async (user) => {
     signturelevel:
       user.role != RoleEnum.ADMIN ? signtureEnum.USER : signtureEnum.ADMIN,
   });
-
+  const jwtid = uuid();
   const accessToken = await generateToken({
     payload: { id: user._id },
     secret: signture.acessSignture,
-    options: { expiresIn: signture.accessExpiresIn },
+    options: { expiresIn: signture.accessExpiresIn , jwtid },
   });
   const refreshToken = await generateToken({
     payload: { id: user._id },
     secret: signture.refreshSignture,
-    options: { expiresIn: signture.refreshExpiresIn },
+    options: { expiresIn: signture.refreshExpiresIn , jwtid },
   });
   return {
     accessToken,
@@ -95,9 +97,15 @@ export const decodedToken = async ({
         : signtrue.refreshSignture,
   });
 
+  const isRevoked = await findOne(TokenModel, { jti: decodeToken.jti });
+  if (isRevoked) throw badRequest({message:"Token is Revoked"});
+
   const user = await findById(UserModel ,decodeToken.id)
   if (!user) throw notFound({message:"User Not Found"})
 
+    if((user.changeCridentialsTime?.getTime() || 0 )> decodeToken.iat * 1000)
+      throw badRequest({message:"login Credentials Changed , Please Login Again"})
+    
     return {
       user ,decodeToken
     }

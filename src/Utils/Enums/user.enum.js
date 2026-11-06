@@ -21,3 +21,7 @@ export const ProviderEnum = {
   GOOGLE: "GOOGLE",
   FACEBOOK: "FACEBOOK",
 };
+export const LogoutEnum = {
+  LogoutFromAllDevices: "LogoutFromAllDevices",
+  LogoutFromCurrentDevice: "LogoutFromCurrentDevice",
+};

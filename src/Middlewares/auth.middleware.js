@@ -3,7 +3,7 @@ import { unauthorized } from "../Utils/Response/error.response.js";
 import { decodedToken } from "../Utils/token/token.js";
 
 export const authentication = ({ tokenType = TokenTypeEnum.ACCESS }) => {
-  return async (req, res, next) => {ذ
+  return async (req, res, next) => {
     const { user, decodeToken } = await decodedToken({
       authorization: req.headers.authorization,
       tokenType,

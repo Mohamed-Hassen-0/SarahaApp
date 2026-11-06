@@ -9,6 +9,8 @@ const router = Router();
 
 router.post("/signup", authServices.signup);
 router.post("/login", authServices.login);
+router.patch("/forget-password", authServices.forgetPassword);
+router.patch("/reset-password", authServices.resetPassword);
 router.post(
   "/refresh-token",
   authentication({ tokenType: TokenTypeEnum.REFRESH }),
@@ -17,6 +19,13 @@ router.post(
 );
 router.post(
   "/social-login",authServices.loginWithGmail,
+);
+
+router.post(
+  "/logout",
+  authentication({ tokenType: TokenTypeEnum.ACCESS }),
+  authorization({ accessRoles: [RoleEnum.ADMIN, RoleEnum.USER] }),
+  authServices.logout,
 );
 
 export default router;

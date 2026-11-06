@@ -30,14 +30,17 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function(){
-        return this.provider===ProviderEnum.SYSTEM 
+      required: function () {
+        return this.provider === ProviderEnum.SYSTEM;
       },
       select: false,
     },
     dateOfBirth: {
       type: Date,
-      required: [true, "Date of Birth is required"],
+      required: function () {
+        return this.provider === ProviderEnum.SYSTEM;
+      },
+
       validate: {
         validator: function (value) {
           const thirteenYearsInMs = 13 * 365.25 * 24 * 60 * 60 * 1000;
@@ -49,7 +52,9 @@ const UserSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: [true, "Phone Number is required"],
+      required: function () {
+        return this.provider === ProviderEnum.SYSTEM;
+      },
     },
 
     gender: {
@@ -57,7 +62,6 @@ const UserSchema = new mongoose.Schema(
       enum: Object.values(GenderEnum),
       default: GenderEnum.MALE,
       required: [true, "Gender is required"],
-      
     },
     role: {
       type: String,
@@ -70,7 +74,9 @@ const UserSchema = new mongoose.Schema(
       default: ProviderEnum.SYSTEM,
     },
     confirmEmail: Date,
+    forgetPasswordOtp: String,
     profileImage: String,
+    changeCridentialsTime: Date,
     coverImage: [String],
   },
   {
@@ -82,7 +88,9 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.virtual("age").get(function () {
-  return Math.floor((Date.now() - this.dateOfBirth.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+  return Math.floor(
+    (Date.now() - this.dateOfBirth.getTime()) / (365.25 * 24 * 60 * 60 * 1000),
+  );
 });
 
 UserSchema.virtual("userName").get(function () {
